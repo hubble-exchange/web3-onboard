@@ -57,19 +57,7 @@
     "@ensdomains/ensjs": "^2.0.1",
     "@ethereumjs/common": "^2.0.0",
     "@ethereumjs/tx": "^3.0.0",
-    "@gnosis.pm/safe-apps-provider": "^0.9.3",
-    "@gnosis.pm/safe-apps-sdk": "^6.2.0",
     "@keystonehq/eth-keyring": "0.9.0",
-    "@ledgerhq/hw-app-eth": "6.8.1",
-    "@ledgerhq/hw-transport-u2f": "^5.21.0",
-    "@ledgerhq/hw-transport-webusb": "6.7.0",
-    "@portis/web3": "^4.0.0",
-    "@shapeshiftoss/hdwallet-core": "^1.15.2",
-    "@shapeshiftoss/hdwallet-keepkey": "^1.15.2",
-    "@shapeshiftoss/hdwallet-keepkey-webusb": "^1.15.2",
-    "@toruslabs/torus-embed": "^1.10.11",
-    "@walletconnect/web3-provider": "^1.7.1",
-    "authereum": "^0.1.12",
     "bignumber.js": "^9.0.0",
     "bnc-sdk": "^4.1.0",
     "bowser": "^2.10.0",
@@ -78,18 +66,7 @@
     "eth-sig-util": "^3.0.1",
     "ethereumjs-tx": "^2.1.2",
     "ethereumjs-util": "^7.0.3",
-    "fortmatic": "^2.2.1",
-    "hdkey": "^2.0.1",
     "regenerator-runtime": "^0.13.7",
-    "trezor-connect": "^8.1.9",
-    "walletlink": "^2.5.0",
     "web3-provider-engine": "^15.0.4"
-  },
-  "resolutions": {
-    "authereum/web3-utils/underscore": "^1.12.1",
-    "authereum/ethereum-private-key-to-address/meow/trim-newlines": "^3.0.1",
-    "authereum/ethers/elliptic": "^6.5.3",
-    "@portis/web3/pocket-js-core/axios": "^0.21.1",
-    "@shapeshiftoss/hdwallet-keepkey/bnb-javascript-sdk-nobroadcast/axios": "^0.21.1"
   }
 }
