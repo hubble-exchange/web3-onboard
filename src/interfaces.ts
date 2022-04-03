@@ -106,7 +106,7 @@ export interface StateAndHelpers extends UserState {
   stateStore: {
     address: WalletStateSliceStore
     network: WalletStateSliceStore
-    balance: BalanceStore | WalletStateSliceStore
+    balance: WalletStateSliceStore
   }
 }
 
@@ -512,10 +512,6 @@ export interface WalletStateSliceStore {
   ) => { clear: () => void } | undefined
   reset: () => void
   get: () => any
-}
-
-export interface BalanceStore extends WalletStateSliceStore {
-  setStateSyncer: (stateSyncer: StateSyncer) => undefined
 }
 
 export type Browser = {

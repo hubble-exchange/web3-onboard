@@ -54,29 +54,5 @@ export default {
       useTsconfigDeclarationDir: true
     })
   ],
-  external: [
-    // '@myetherwallet/mewconnect-web-client',
-    'bowser',
-    'bnc-sdk',
-    'bignumber.js',
-    'ethereumjs-tx',
-    '@ethereumjs/tx',
-    '@ethereumjs/common',
-    'ethereumjs-util',
-    'eth-lattice-keyring',
-    'eth-sig-util',
-    '@cvbb/eth-keyring',
-    '@keystonehq/eth-keyring',
-    'util',
-    'assert',
-    'buffer',
-    'stream',
-    'web3-provider-engine',
-    'web3-provider-engine/subproviders/hooked-wallet',
-    'web3-provider-engine/subproviders/rpc',
-    'web3-provider-engine/subproviders/subscriptions',
-    'web3-provider-engine/subproviders/filters',
-    'eth-provider',
-    '@ensdomains/ensjs'
-  ]
+  external: ['bowser', 'bignumber.js']
 }

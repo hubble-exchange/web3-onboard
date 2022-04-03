@@ -1,19 +1,16 @@
-import { Emitter } from 'bnc-sdk/dist/types/src/interfaces'
-import { writable, derived, get } from 'svelte/store'
-import { getBlocknative } from './services'
-import { wait, makeCancelable, createInterval } from './utilities'
-import { validateWalletInterface, validateType } from './validation'
+import { derived, get, writable } from 'svelte/store'
 import {
-  WritableStore,
-  ReadableStore,
-  WalletInterfaceStore,
-  WalletInterface,
-  WalletStateSliceStore,
-  StateSyncer,
-  BalanceStore,
   CancelablePromise,
-  WalletCheckModule
+  ReadableStore,
+  StateSyncer,
+  WalletCheckModule,
+  WalletInterface,
+  WalletInterfaceStore,
+  WalletStateSliceStore,
+  WritableStore
 } from './interfaces'
+import { createInterval } from './utilities'
+import { validateType, validateWalletInterface } from './validation'
 
 export const app: WritableStore = writable({
   dappId: '',
@@ -57,7 +54,7 @@ export const stateSyncStatus: {
 
 export let address: WalletStateSliceStore
 export let network: WalletStateSliceStore
-export let balance: BalanceStore | WalletStateSliceStore
+export let balance: WalletStateSliceStore
 export let wallet: WritableStore
 export let state: ReadableStore
 export let walletInterface: WalletInterfaceStore
@@ -74,14 +71,6 @@ export function initializeStores() {
     parameter: 'network',
     initialState: null
   })
-
-  balance = get(app).dappId
-    ? createBalanceStore(null)
-    : createWalletStateSliceStore({
-        parameter: 'balance',
-        initialState: null,
-        intervalSetting: 1000
-      })
 
   wallet = writable({
     name: null,
@@ -294,150 +283,4 @@ function createWalletStateSliceStore(options: {
       }
     }
   }
-}
-
-function createBalanceStore(initialState: string | null): BalanceStore {
-  let stateSyncer: StateSyncer
-  let emitter: any
-  let emitterAddress: string | undefined
-  let cancel: () => void = () => {}
-
-  const { subscribe } = derived(
-    [address, network],
-    ([$address, $network]: string[], set: any) => {
-      if (stateSyncer && !stateSyncer.onChange) {
-        if ($address && $network && stateSyncer.get && set) {
-          cancel = syncStateWithTimeout({
-            getState: stateSyncer.get,
-            setState: set,
-            timeout: 2000,
-            currentBalance: get(balance)
-          })
-
-          if (emitterAddress !== $address) {
-            const blocknative = getBlocknative()
-
-            // unsubscribe from previous address
-            if (emitterAddress) {
-              blocknative.unsubscribe(emitterAddress)
-            }
-
-            // subscribe to new address and filter to just confirmed status
-            blocknative
-              .configuration({
-                scope: $address,
-                filters: [{ status: 'confirmed' }],
-                watchAddress: true
-              })
-              .then((result: { emitter: Emitter }) => {
-                emitter = result.emitter
-
-                emitter.on('txConfirmed', () => {
-                  if (stateSyncer.get) {
-                    cancel = syncStateWithTimeout({
-                      getState: stateSyncer.get,
-                      setState: set,
-                      timeout: 2000,
-                      currentBalance: get(balance),
-                      pollStart: Date.now()
-                    })
-                  }
-
-                  return false
-                })
-
-                emitterAddress = $address
-              })
-              // swallow possible timeout error for sending configuration
-              .catch(() => {})
-          }
-        } else if (emitterAddress && !$address) {
-          const blocknative = getBlocknative()
-
-          // unsubscribe from previous address
-          blocknative.unsubscribe(emitterAddress)
-
-          // no address, so set balance to undefined
-          set && set(undefined)
-          emitterAddress = undefined
-        }
-      }
-
-      set(initialState)
-    }
-  )
-
-  let currentState: string | null
-  subscribe((store: any) => {
-    currentState = store
-  })
-
-  return {
-    subscribe,
-    get: () => currentState,
-    setStateSyncer: (syncer: StateSyncer) => {
-      validateType({ name: 'syncer', value: syncer, type: 'object' })
-
-      const { get, onChange } = syncer
-
-      validateType({
-        name: 'balance.get',
-        value: get,
-        type: 'function',
-        optional: true
-      })
-
-      validateType({
-        name: 'balance.onChange',
-        value: onChange,
-        type: 'function',
-        optional: true
-      })
-
-      stateSyncer = syncer
-
-      return undefined
-    },
-    reset: cancel
-  }
-}
-
-function syncStateWithTimeout(options: {
-  getState: () => Promise<string | number | null>
-  setState: (newState: string) => void
-  timeout: number
-  currentBalance: string
-  pollStart?: number
-}) {
-  const { getState, setState, timeout, currentBalance, pollStart } = options
-
-  if (pollStart && Date.now() - pollStart > 25000) {
-    return () => {}
-  }
-
-  const prom = makeCancelable(getState())
-
-  stateSyncStatus.balance = prom
-
-  prom
-    .then(async (result: string) => {
-      if (result === currentBalance && pollStart) {
-        await wait(350)
-        syncStateWithTimeout(options)
-      } else {
-        stateSyncStatus.balance = null
-        setState(result)
-      }
-    })
-    .catch(() => {
-      stateSyncStatus.balance = null
-    })
-
-  const timedOut = wait(timeout)
-
-  timedOut.then(() => {
-    prom.cancel()
-  })
-
-  return () => prom.cancel()
 }

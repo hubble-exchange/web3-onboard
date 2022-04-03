@@ -53,20 +53,7 @@
     "typescript": "^3.6.4"
   },
   "dependencies": {
-    "@cvbb/eth-keyring": "^1.1.0",
-    "@ensdomains/ensjs": "^2.0.1",
-    "@ethereumjs/common": "^2.0.0",
-    "@ethereumjs/tx": "^3.0.0",
-    "@keystonehq/eth-keyring": "0.9.0",
     "bignumber.js": "^9.0.0",
-    "bnc-sdk": "^4.1.0",
-    "bowser": "^2.10.0",
-    "eth-lattice-keyring": "^0.2.7",
-    "eth-provider": "^0.6.1",
-    "eth-sig-util": "^3.0.1",
-    "ethereumjs-tx": "^2.1.2",
-    "ethereumjs-util": "^7.0.3",
-    "regenerator-runtime": "^0.13.7",
-    "web3-provider-engine": "^15.0.4"
+    "bowser": "^2.10.0"
   }
 }

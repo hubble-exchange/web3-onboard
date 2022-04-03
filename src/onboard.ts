@@ -1,39 +1,30 @@
-import 'regenerator-runtime/runtime'
-
-import { get, derived } from 'svelte/store'
-
-import Onboard from './views/Onboard.svelte'
-
-import {
-  app,
-  address,
-  network,
-  balance,
-  wallet,
-  state,
-  walletInterface,
-  resetWalletState,
-  initializeStores
-} from './stores'
-
-import { getDeviceInfo, getEns } from './utilities'
-import { validateInit, validateConfig } from './validation'
-
+import { derived, get } from 'svelte/store'
 import { version } from '../package.json'
-
 import {
-  Initialization,
-  AppState,
   API,
+  AppState,
   ConfigOptions,
+  Ens,
+  Initialization,
   UserState,
-  Wallet,
-  WalletInitOptions,
-  Ens
+  Wallet
 } from './interfaces'
-
 import initializeModules from './modules'
 import { closeSocketConnection } from './services'
+import {
+  address,
+  app,
+  balance,
+  initializeStores,
+  network,
+  resetWalletState,
+  state,
+  wallet,
+  walletInterface
+} from './stores'
+import { getDeviceInfo } from './utilities'
+import { validateConfig, validateInit } from './validation'
+import Onboard from './views/Onboard.svelte'
 
 let onboard: any
 
@@ -61,7 +52,7 @@ function init(initialization: Initialization): API {
     )
 
     // close WebSocket connection
-    closeSocketConnection()
+    closeSocketConnection
 
     // reset the wallet state
     resetWalletState()
@@ -149,7 +140,7 @@ function init(initialization: Initialization): API {
     if (subscriptions.ens) {
       derived([address, wallet], ([$address, $wallet], set) => {
         if ($address && $wallet && $wallet.provider) {
-          getEns($wallet.provider, $address).then(set)
+          set(undefined)
         } else {
           // Wallet not selected or reset
           set(undefined)

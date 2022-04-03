@@ -1,9 +1,8 @@
-import bowser from 'bowser'
 import BigNumber from 'bignumber.js'
+import { getParser } from 'bowser'
 import { get } from 'svelte/store'
-
+import { WalletInterface } from './interfaces'
 import { app } from './stores'
-import { WalletInterface, Ens } from './interfaces'
 
 export function getNetwork(provider: any): Promise<number | any> {
   return new Promise((resolve, reject) => {
@@ -65,32 +64,6 @@ export function getAddress(provider: any): Promise<string | any> {
       resolve(null)
     }
   })
-}
-
-export async function getEns(provider: any, address: string): Promise<Ens> {
-  const { networkId } = get(app)
-  try {
-    // There is an issue with ens and ts unable to find the
-    // declaration file for it even though it is present.
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-    // @ts-ignore - TS7016
-    const { default: ENS, getEnsAddress } = await import('@ensdomains/ensjs')
-    const ens = new ENS({ provider, ensAddress: getEnsAddress(networkId) })
-    const { name } = await ens.getName(address)
-    const nameInterface = await ens.name(name)
-    const contentHash = await nameInterface?.getContent()
-    const avatar = await nameInterface?.getText('avatar')
-    return {
-      name,
-      avatar,
-      contentHash,
-      getText: nameInterface?.getText.bind(nameInterface)
-    }
-  } catch (e) {
-    // Error getting ens
-    console.error(e)
-    return {}
-  }
 }
 
 export function getBalance(
@@ -383,7 +356,7 @@ export function getProviderName(provider: any): string | undefined {
 }
 
 export function getDeviceInfo() {
-  const parsed = bowser.getParser(window.navigator.userAgent)
+  const parsed = getParser(window.navigator.userAgent)
   const os = parsed.getOS()
   const browser = parsed.getBrowser()
   const { type } = parsed.getPlatform()
