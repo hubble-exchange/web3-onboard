@@ -119,8 +119,8 @@ export function initializeStores() {
         // start syncing state and save intervals
         currentSyncerIntervals = [
           address.setStateSyncer(walletInterface.address),
-          network.setStateSyncer(walletInterface.network),
-          balance.setStateSyncer(walletInterface.balance)
+          network.setStateSyncer(walletInterface.network)
+          // balance.setStateSyncer(walletInterface.balance)
         ]
       }
 
