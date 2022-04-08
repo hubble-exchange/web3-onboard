@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime'
 import { derived, get } from 'svelte/store'
 import { version } from '../package.json'
 import {

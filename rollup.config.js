@@ -54,5 +54,5 @@ export default {
       useTsconfigDeclarationDir: true
     })
   ],
-  external: ['bowser', 'bignumber.js']
+  external: ['bowser', 'bignumber.js', 'promise-cancelable', 'regenerator-runtime/runtime']
 }
